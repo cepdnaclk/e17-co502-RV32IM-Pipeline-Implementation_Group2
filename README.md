@@ -1,7 +1,4 @@
 ___
-# DELETE THIS INSTRUCTIONS AND ADD A SHORT INTRODUCTION ABOUT YOUR PROJECT
+# e17-co502-RV32IM-Pipeline-Implementation_Group2
 ___
 
-## Please refer the instructions in below URL:
-
-https://projects.ce.pdn.ac.lk/docs/how-to-add-a-project
