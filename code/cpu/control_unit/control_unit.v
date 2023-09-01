@@ -1,6 +1,6 @@
 /////////////////////////////////////////////
 // Advanced Computer Architecture (CO502)  //
-// Design : ALU Module                     // 
+// Design : Control Unit Module            // 
 // Group  : 2                              //
 /////////////////////////////////////////////
 
@@ -59,13 +59,13 @@ module control_unit (
 
 
     /**************************** OPERAND MUX select signals ****************************/
-    // Set OPERAND1 to PC for these instructions
+    // Set operand1 to PC for these instructions
     assign #1 operand1_sel =
         (opcode === 7'b0010111) |   // AUIPC
         (opcode === 7'b1101111) |   // JAL
         (opcode === 7'b1100011);    // BRANCH
 
-    // Set OPERAND2 to IMMEDIATE for these instructions
+    // Set operand2 to Immeadiate for these instructions
     assign #1 operand2_sel = 
         (opcode === 7'b0110111) |   // LUI
         (opcode === 7'b0010111) |   // AUIPC
