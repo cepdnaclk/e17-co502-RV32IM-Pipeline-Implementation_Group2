@@ -59,3 +59,4 @@ module ID_EX_pipeline (
             reg_write_sel_out <= reg_write_sel_in;
         end
     end
+endmodule
