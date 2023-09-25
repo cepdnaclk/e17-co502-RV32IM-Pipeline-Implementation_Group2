@@ -5,12 +5,13 @@
 /////////////////////////////////////////////
 
 module ProgramCounter(
-    input wire [31:0] pc_in,       // Input: New program counter value
-    input wire reset,              // Input: Reset signal
-    output wire [31:0] pc_out      // Output: Current program counter value
+    input wire clk,               // Input: Clock signal
+    input wire [31:0] pc_in,     // Input: New program counter value
+    input wire reset,            // Input: Reset signal
+    output wire [31:0] pc_out    // Output: Current program counter value
 );
 
-// 32-bit register for the program counter
+//32-bit register for the program counter
 reg [31:0] pc_register;
 
 // Always block for updating the program counter
