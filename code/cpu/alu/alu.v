@@ -44,9 +44,9 @@ module alu(DATA1, DATA2, SELECT, RESULT);
     assign #1 OR = DATA1 | DATA2;   // Bitwise OR operation
     assign #1 XOR = DATA1 ^ DATA2;  // Bitwise XOR operation
 
-    assign #2 SLL = DATA1 << DATA2; // Bitwise left shift logical
-    assign #2 SRL = DATA1 >> DATA2; // Bitwise right shift logical
-    assign #2 SRA = $signed(DATA1) >>> DATA2; // Arithmetic right shift arithmetic
+    assign #2 SLL = DATA1 << DATA2; // Bitwise left shift logical on DATA1 by shift amount in DATA2
+    assign #2 SRL = DATA1 >> DATA2; // Bitwise right shift logical on DATA1 by shift amount in DATA2
+    assign #2 SRA = $signed(DATA1) >>> DATA2; // Arithmetic right shift arithmetic on DATA1 by shift amount in DATA2
 
     assign #1 SLT = ($signed(DATA1) < $signed(DATA2)) ? 1'b1 : 1'b0; // Set less than 
     assign #1 SLTU = DATA1 < DATA2 ? 1'b1 : 1'b0; // Set less than Unsigned
