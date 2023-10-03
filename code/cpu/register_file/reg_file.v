@@ -9,9 +9,9 @@
 // Module for Register file
 module reg_file(IN, OUT1, OUT2, INADDRESS, OUTADDRESS1, OUTADDRESS2, WRITE, CLK, RESET);
     // Define the ports
-    input [31:0] IN;                                    // 32bit input
-    output [31:0] OUT1, OUT2;                           // 32bit outputs
-    input [4:0] INADDRESS, OUTADDRESS1, OUTADDRESS2;    // 5 bit addresses
+    input [31:0] IN;                                    // 32bit input to write data
+    output [31:0] OUT1, OUT2;                           // 32bit outputs to read data
+    input [4:0] INADDRESS, OUTADDRESS1, OUTADDRESS2;    // 5 bit addresses write address and 2 read addresses
 	input WRITE, CLK, RESET;                            // Input signals
 
     reg [31:0] REGISTERS  [0:31];     //32 element array of 32 bit registers	             
