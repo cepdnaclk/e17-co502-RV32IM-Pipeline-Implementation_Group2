@@ -85,7 +85,7 @@ module cpu (
     
     //IF stage
     adder_4 PC_PLUS_4_ADDER (PC, PC_4);
-    mux_2to1 Branch_select_mux(PC_4, ALU_OUT, PC_NEXT, Branch_Jump_Signal);
+    mux_2to1 Branch_select_mux(PC_4, ALU_OUT, PC_next, Branch_Jump_Signal);
 
     //pipeline IF_ID 
     IF_ID_pipeline IF_ID_pipeline(PC, INSTRUCTION, RESET, CLK,  ID_PC, ID_INSTRUCTION);
