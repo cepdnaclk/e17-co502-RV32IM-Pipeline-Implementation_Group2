@@ -39,7 +39,7 @@ module cpu (
     wire [3:0] mem_read;
     wire [2:0] mem_write;
     wire [3:0] branch_sel;
-    wire [2:0] immeadiate_sel;
+    wire [2:0] immediate_sel;
     wire [1:0] reg_write_sel;
     wire reg_write_EN, operand1_sel, operand2_sel;
 
@@ -66,8 +66,11 @@ module cpu (
     //outputs of 2to1 muxes and alu
     wire [31:0] MUX1_OUT, MUX2_OUT, ALU_OUT;
 
+    //output of Branch_Unit
+    wire Branch_Jump_Signal;
+
     //outputs of EX_MEM pipeline
-    wire [31:0] MEM_PC, MEM_REG_OUT2, MEM_ALU_OUT, MEM_REG_WRITE_ADDR;
+    wire [31:0] MEM_PC, MEM_REG_OUT2, MEM_ALU_OUT, MEM_REG_WRITE_ADDR, MEM_PC_4;
     wire [3:0] mem_read_MEM;
     wire [2:0] mem_write_MEM;
     wire [1:0] reg_write_sel_MEM;
@@ -112,6 +115,7 @@ module cpu (
     alu ALU(MUX1_OUT, MUX2_OUT, ALU_sel_EX, ALU_OUT);
 
     //Branch control unit
+    Branch_unit Branch_Unit(branch_sel, EX_REG_OUT1, EX_REG_OUT2, Branch_Jump_Signal);
 
     //EX_MEM pipeline
     EX_MEM_pipeline EX_MEM_Pipeline(CLK, RESET, 
