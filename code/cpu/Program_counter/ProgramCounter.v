@@ -5,7 +5,7 @@
 /////////////////////////////////////////////
 
 module ProgramCounter(
-    input wire clk,               // Input: Clock signal
+    input wire clk,              // Input: Clock signal
     input wire [31:0] pc_in,     // Input: New program counter value
     input wire reset,            // Input: Reset signal
     output wire [31:0] pc_out    // Output: Current program counter value

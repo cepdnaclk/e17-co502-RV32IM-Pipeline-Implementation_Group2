@@ -11,7 +11,7 @@
 module control_unit (
     Instruction, ALU_sel, reg_write_EN, 
     mem_write, mem_read, branch_sel, 
-    immeadiate_sel, operand1_sel, operand2_sel, 
+    immediate_sel, operand1_sel, operand2_sel, 
     reg_write_sel
 );
 
@@ -23,7 +23,7 @@ module control_unit (
     output [3:0] mem_read;
     output [2:0] mem_write;
     output [3:0] branch_sel;
-    output [2:0] immeadiate_sel;
+    output [2:0] immediate_sel;
     output [1:0] reg_write_sel;
     output reg_write_EN, operand1_sel, operand2_sel;
 
@@ -47,7 +47,7 @@ module control_unit (
 
 
     /**************************** Immediate select signal ****************************/
-    assign #1 immeadiate_sel = 
+    assign #1 immediate_sel = 
         (opcode === 7'b0110111) ? 3'b000 :      // LUI (U-type)
         (opcode === 7'b0010111) ? 3'b000 :      // AUIPC (U-type)
         (opcode === 7'b1101111) ? 3'b001 :      // JAL (J-type)
