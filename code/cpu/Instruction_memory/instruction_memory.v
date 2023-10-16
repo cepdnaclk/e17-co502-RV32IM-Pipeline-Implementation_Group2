@@ -24,9 +24,9 @@ module i_mem(
 
     reg [7:0] MEM_ARRAY [0:1023];
 
-    initial
+    initial 
     begin
-        $readmemh();
+    $readmemh("instructions.mem", MEM_ARRAY);
     end
 
     always @(*)
