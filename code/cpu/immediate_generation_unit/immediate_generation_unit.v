@@ -1,6 +1,6 @@
 /////////////////////////////////////////////
 // Advanced Computer Architecture (CO502)  //
-// Design : Immediate value module         // 
+// Design : Immediate generation module    // 
 // Group  : 2                              //
 /////////////////////////////////////////////
 

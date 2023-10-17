@@ -48,7 +48,7 @@ end
 //Reading & writing
 always @(posedge CLK, posedge RESET)
 begin
-        
+    if (readaccess) begin   
         case (counter)
             4'b0000:begin
                 READ_DATA[7:0]=memory_array[{ADDRESS[27:0],counter}];
@@ -99,7 +99,9 @@ begin
                 READ_DATA[127:120]=memory_array[{ADDRESS[27:0],counter}];
             end 
         endcase
+    end
 
+    if (writeaccess) begin
         case (counter)
             4'b0000:begin
                 memory_array[{ADDRESS[27:0],counter}]=WRITE_DATA[7:0];
@@ -150,7 +152,7 @@ begin
                 memory_array[{ADDRESS[27:0],counter}]=WRITE_DATA[127:120];
             end
         endcase
-
+    end
 end
 
 endmodule
