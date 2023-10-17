@@ -122,7 +122,7 @@ module dcache (
     end
     
 
-    /* Cache Controller FSM Start */
+    // Cache Controller FSM Start
 
     parameter IDLE = 3'b000, MEM_READ = 3'b001,MEM_WRITE=3'b010,CACHE_WRITE=3'b011;
     reg [2:0] state, next_state;
@@ -163,8 +163,6 @@ module dcache (
             begin
                 mem_read <= 0;
                 mem_write <= 0;
-                //mem_address <= 28'dx;
-                //mem_WRITE_DATA <= 128'dx;
                 BUSYWAIT <= 0;
                 write_from_mem <= 0;  
             end
@@ -174,7 +172,6 @@ module dcache (
                 mem_read <= 1;
                 mem_write <= 0;
                 mem_address <= address[31:4];
-                //mem_WRITE_DATA <= 128'dx;
                 BUSYWAIT <= 1;
                 write_from_mem <=0;
             end
@@ -183,8 +180,6 @@ module dcache (
             begin
                 mem_read <=0;
                 mem_write <=0;
-                //mem_address <= 28'dx;
-                //mem_WRITE_DATA <= 128'dx;
                 BUSYWAIT <=1;
                 write_from_mem <=1;//this signal assert when data block is come from memoey in this state
             end
@@ -212,6 +207,6 @@ module dcache (
             state <= next_state;
     end
 
-    /* Cache Controller FSM End */
+    // Cache Controller FSM End
 
 endmodule

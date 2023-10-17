@@ -38,7 +38,7 @@ module control_unit (
     assign funct7 = Instruction[31:25];
 
 
-    /**************************** Register write enable signal ****************************/
+    // Register write enable signal
     // Set for all instructions other than BRANCH and STORE
     assign #1 reg_write_EN = ~(
         (opcode === 7'b1100011) |   // BRANCH
@@ -46,7 +46,7 @@ module control_unit (
     );
 
 
-    /**************************** Immediate select signal ****************************/
+    // Immediate select signal 
     assign #1 immediate_sel = 
         (opcode === 7'b0110111) ? 3'b000 :      // LUI (U-type)
         (opcode === 7'b0010111) ? 3'b000 :      // AUIPC (U-type)
@@ -58,7 +58,7 @@ module control_unit (
         (opcode === 7'b0010011) ? 3'b010 : 3'bxxx;     // All other I-type (ADDI, ANDI, ORI, etc...)
 
 
-    /**************************** OPERAND MUX select signals ****************************/
+    // OPERAND MUX select signals
     // Set operand1 to PC for these instructions
     assign #1 operand1_sel =
         (opcode === 7'b0010111) |   // AUIPC
@@ -76,7 +76,7 @@ module control_unit (
         (opcode === 7'b0100011) |   // STORE
         (opcode === 7'b0010011);    // All other I-type (ADDI, ANDI, ORI, etc...) 
 
-    /**************************** ALU function  select signal ****************************/
+    // ALU function  select signal
     assign #1 ALU_sel[2:0] = 
         (
             // Force selection of ADD function
@@ -102,7 +102,7 @@ module control_unit (
         ({opcode, funct3, funct7} === {7'b0010011, 3'b101, 7'b0100000});    // SRAI
 
     
-    /**************************** Branch Control Unit select signal ****************************/
+    // Branch Control Unit select signal
     // MSB of BRANCH_CTRL must be set for branch/jump instructions
     assign #1 branch_sel[3] = 
         (opcode === 7'b1101111) |   // JAL
@@ -116,7 +116,7 @@ module control_unit (
             3'b010 : funct3;
 
 
-    /**************************** Data memory control signals ****************************/
+    // Data memory control signals
     // Data memory read signal
     assign #1 mem_write[2] = (opcode === 7'b0100011);   // Set MSB for STORE instructions
     assign #1 mem_write[1:0] = funct3[1:0];     // Lower bits are derived from FUNCT3
@@ -126,7 +126,7 @@ module control_unit (
     assign #1 mem_read[2:0] = funct3;   // Lower bits are derived from FUNCT3
 
 
-    /**************************** Writeback value select signal ****************************/
+    // Writeback value select signal
     assign #1 reg_write_sel = 
         ((opcode == 7'b1101111) | (opcode == 7'b1100111)) ? 2'b00 :   // JAL, JALR (PC)
         (opcode == 7'b0000011) ? 2'b01 :        // LOAD (Mem output)
