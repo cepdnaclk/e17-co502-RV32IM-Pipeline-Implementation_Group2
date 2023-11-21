@@ -12,6 +12,9 @@
 `include "../other_modules/adder_4.v"
 `include "../other_modules/mux_4to1.v"
 `include "../other_modules/mux_2to1.v"
+`include "../register_memory/register_memory.v"
+`include "../register_memory/reg_mem_controller.v"
+
 
 `timescale 1ns/100ps
 
@@ -23,16 +26,17 @@ module cpu (CLK, RESET);
     wire INSTR_MEM_BUSYWAIT;
     wire [31:0] INSTRUCTION;     // Instruction fetched from instruction memory
     reg [31:0] PC;               // Program Counter
-    wire [31:0] PC_PLUS_4, PC_NEXT;
+    wire [31:0] PC_PLUS_4, PC_NEXT, PC_REG_MUX;
 
     // ID
-    wire [31:0] ID_PC, ID_INSTRUCTION, ID_REG_DATA1, ID_REG_DATA2, ID_IMMEDIATE;
+    wire [31:0] ID_PC, ID_INSTRUCTION, ID_REG_DATA1, ID_REG_DATA2, ID_IMMEDIATE, REG_MEM_PC;
+    wire [1023:0] OUT_DATA_RF, IN_DATA_RF;
     wire [4:0] ID_ALU_SELECT;
     wire [3:0] ID_DATA_MEM_READ, ID_BRANCH_CTRL;
     wire [2:0] ID_DATA_MEM_WRITE, ID_IMMEDIATE_SELECT;
     wire [1:0] ID_WB_VALUE_SELECT;
-    wire ID_REG_WRITE_EN, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT;
-
+    wire ID_REG_WRITE_EN, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT, REG_MEM_WRITE, REG_MEM_READ, READ_MEM, WRITE_MEM;
+    wire RF_WRITE, RF_READ, RM_WRITE, RM_READ, REG_MEM_BUSYWAIT, REG_MEM; 
     // EX
     wire [31:0] EX_PC, EX_IMMEDIATE, EX_REG_DATA1, EX_REG_DATA2,
                 EX_ALU_DATA1, EX_ALU_DATA2, EX_ALU_OUT;
@@ -64,7 +68,9 @@ module cpu (CLK, RESET);
     adder_4 IF_PC_PLUS_4_ADDER (CLK, BUSYWAIT, RESET, PC, PC_PLUS_4);
 
     //Mux to select between PC+4 and branch target
-    mux_2to1 BRANCH_SELECT_MUX (PC_PLUS_4, EX_ALU_OUT, PC_NEXT, EX_BJ_SIG);
+    mux_2to1 BRANCH_SELECT_MUX (PC_PLUS_4, EX_ALU_OUT, PC_REG_MUX, EX_BJ_SIG);
+
+    mux_2to1 REG_MEM_SELECT_MUX (REG_MEM_PC, PC_REG_MUX, PC_NEXT, REG_MEM);
 
     // Instruction chache (Instruction memory is in Instruction Cache)
     i_cache INSTRUCTION_CACHE (PC_PLUS_4, CLK, RESET, INSTRUCTION, INSTR_MEM_BUSYWAIT);
@@ -74,11 +80,14 @@ module cpu (CLK, RESET);
 
     ////////////ID stage/////////////
     // Control unit 
-    control_unit ID_CONTROL_UNIT (ID_INSTRUCTION, ID_ALU_SELECT, ID_REG_WRITE_EN, ID_DATA_MEM_WRITE, ID_DATA_MEM_READ, ID_BRANCH_CTRL, ID_IMMEDIATE_SELECT, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT, ID_WB_VALUE_SELECT);
+    control_unit ID_CONTROL_UNIT (ID_INSTRUCTION, ID_ALU_SELECT, ID_REG_WRITE_EN, ID_DATA_MEM_WRITE, ID_DATA_MEM_READ, ID_BRANCH_CTRL, ID_IMMEDIATE_SELECT, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT, ID_WB_VALUE_SELECT, REG_MEM_WRITE, REG_MEM_READ);
 
     //Register file
-    reg_file ID_REGISTER_FILE (WB_WRITEBACK_VALUE, ID_REG_DATA1, ID_REG_DATA2, WB_REG_WRITE_ADDR, ID_INSTRUCTION[19:15], ID_INSTRUCTION[24:20], WB_REG_WRITE_EN, CLK, RESET);
+    reg_file ID_REGISTER_FILE (WB_WRITEBACK_VALUE, ID_REG_DATA1, ID_REG_DATA2, WB_REG_WRITE_ADDR, ID_INSTRUCTION[19:15], ID_INSTRUCTION[24:20], WB_REG_WRITE_EN, CLK, RESET, IN_DATA_RF, OUT_DATA_RF, RF_READ, RF_WRITE);
 
+    reg_mem_controller REG_MEM_CONTROLLER (REG_MEM_READ, REG_MEM_WRITE, RF_WRITE, RF_READ, RM_write, RM_read, CLK, RESET, REG_MEM_BUSYWAIT, REG_MEM);
+
+    register_memory REGISTER_MOMORY (OUT_DATA_RF, RM_WRITE, RM_READ, CLK, RESET, IN_DATA_RF, PC_NEXT, REG_MEM_PC);
     //Immediate generation unit
     immediate_generation_unit ID_IMMEDIATE_GEN_UNIT (ID_INSTRUCTION, ID_IMMEDIATE_SELECT, ID_IMMEDIATE);
 
@@ -119,7 +128,7 @@ module cpu (CLK, RESET);
     begin
         if (RESET == 1'b1)      // Reset PC to zero if RESET is asserted
             PC <= #1 32'd0;
-        else if (!INSTR_MEM_BUSYWAIT || !DATA_MEM_BUSYWAIT)     // Stall PC if BUSYWAIT is asserted
+        else if (!INSTR_MEM_BUSYWAIT || !DATA_MEM_BUSYWAIT || REG_MEM_BUSYWAIT)     // Stall PC if BUSYWAIT is asserted
             PC <= #1 PC_NEXT;
     end
 
