@@ -7,15 +7,15 @@
 `timescale  1ns/100ps
 
 // Module for Register memory
-module register_memory(IN_DATA, WRITE, READ, CLK, RESET, OUT_DATA, PC_IN, PC_OUT, BUSYWAIT);
+module register_memory(IN_DATA, WRITE, READ, CLK, RESET, OUT_DATA, PC_IN, PC_OUT);
     // Define the ports
-    input [1024:0] IN_DATA; // Input Register values
+    input [1023:0] IN_DATA; // Input Register values
     input [31:0] PC_IN; // Input PC value  
 
 	input WRITE, READ, CLK, RESET;  // Input signals
     output reg [31:0] PC_OUT; // Output PC value 
-    output reg [1024:0] OUT_DATA; // Output Register values
-    output reg BUSYWAIT;
+    output reg [1023:0] OUT_DATA; // Output Register values
+    // output reg BUSYWAIT;
 
     reg [31:0] REGISTERS  [0:31];       // 32 element array of 32 bit registers       
 	
@@ -23,7 +23,7 @@ module register_memory(IN_DATA, WRITE, READ, CLK, RESET, OUT_DATA, PC_IN, PC_OUT
 always @(posedge CLK)
     begin
         if(WRITE && !RESET) begin
-            BUSYWAIT = 1;
+            // BUSYWAIT = 1;
             PC_OUT <= #2 PC_IN;
             REGISTERS[0] = #40 IN_DATA[31:0]; 
             REGISTERS[1] = #40 IN_DATA[63:32]; 
@@ -59,7 +59,7 @@ always @(posedge CLK)
             REGISTERS[31] = #40 IN_DATA[1023:992]; 
         end
         else if (READ && !RESET) begin
-            BUSYWAIT = 1;
+            // BUSYWAIT = 1;
 
             OUT_DATA[31:0] = #40 REGISTERS[0]; 
             OUT_DATA[63:32] = #40 REGISTERS[1]; 
@@ -95,7 +95,7 @@ always @(posedge CLK)
             OUT_DATA[1023:992] = #40 REGISTERS[31]; 
         end
         else begin      
-            BUSYWAIT = 0;
+            // BUSYWAIT = 0;
             if (RESET) begin
                 for (integer i = 0; i < 32; i = i + 1) begin
                     REGISTERS[i] <= #2 0;       // Set zero to all the registers

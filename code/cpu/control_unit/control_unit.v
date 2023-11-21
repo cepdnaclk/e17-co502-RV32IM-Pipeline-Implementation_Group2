@@ -46,9 +46,8 @@ module control_unit (
 
     // Write from reg_file -> 32' 00000110 00000000 00000000 00000000
     // Write to reg_file   -> 32' 00000110 00000000 00000000 00000001
-    assign #1 reg_mem_write = ((func7 === 7'b0000011) & (opcode === 7'b0000000));
-    assign #1 reg_mem_read  = ((func7 === 7'b0000011) & (opcode === 7'b0000001));
-    
+    assign #1 reg_mem_write = ({opcode, funct3, funct7} === {7'b0000011, 3'b000, 7'b0000000});
+    assign #1 reg_mem_read  = ({opcode, funct3, funct7} === {7'b0000011, 3'b000, 7'b0000001});
  
     // Register write enable signal
     // Set for all instructions other than BRANCH and STORE
