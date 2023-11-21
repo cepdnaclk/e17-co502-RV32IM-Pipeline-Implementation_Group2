@@ -12,7 +12,7 @@ module control_unit (
     Instruction, ALU_sel, reg_write_EN, 
     mem_write, mem_read, branch_sel, 
     immediate_sel, operand1_sel, operand2_sel, 
-    reg_write_sel
+    reg_write_sel, reg_mem_write, reg_mem_read
 );
 
     // Define input ports
@@ -25,7 +25,7 @@ module control_unit (
     output [3:0] branch_sel;
     output [2:0] immediate_sel;
     output [1:0] reg_write_sel;
-    output reg_write_EN, operand1_sel, operand2_sel;
+    output reg_write_EN, operand1_sel, operand2_sel, reg_mem_write, reg_mem_read;
 
     // Instruction control segments
     wire [6:0] opcode;
@@ -37,7 +37,19 @@ module control_unit (
     assign funct3 = Instruction[14:12];
     assign funct7 = Instruction[31:25];
 
+    /////////////////////////////////////////////////////////////////
+    // Check point instructions
 
+    // func7 = 7'b0000011
+    // opcode 7'0000000 / 7'0000001
+    // func3 = 3'000
+
+    // Write from reg_file -> 32' 00000110 00000000 00000000 00000000
+    // Write to reg_file   -> 32' 00000110 00000000 00000000 00000001
+    assign #1 reg_mem_write = ((func7 === 7'b0000011) & (opcode === 7'b0000000));
+    assign #1 reg_mem_read  = ((func7 === 7'b0000011) & (opcode === 7'b0000001));
+    
+ 
     // Register write enable signal
     // Set for all instructions other than BRANCH and STORE
     assign #1 reg_write_EN = ~(
