@@ -28,7 +28,7 @@ module reg_mem_controller(reg_mem_read, reg_mem_write, RF_write, RF_read, RM_wri
             BUSYWAIT <= #50 0;
         end 
         else begin
-            if(BUSYWAIT) begin
+            if(!BUSYWAIT) begin
                 RM_read <= #2 0;
                 RF_write <= #2 0;
                 RF_read <= #2 0;
